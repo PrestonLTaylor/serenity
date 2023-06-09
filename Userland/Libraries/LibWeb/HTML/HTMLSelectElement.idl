@@ -20,5 +20,5 @@ interface HTMLSelectElement : HTMLElement {
     [CEReactions] undefined add((HTMLOptionElement or HTMLOptGroupElement) element, optional (HTMLElement or long)? before = null);
 
     attribute long selectedIndex;
-
+    attribute DOMString value;
 };

@@ -33,6 +33,9 @@ public:
     int selected_index() const;
     void set_selected_index(int);
 
+    DeprecatedString value() const;
+    void set_value(DeprecatedString const&);
+
     Vector<JS::Handle<HTMLOptionElement>> list_of_options() const;
 
     // ^EventTarget

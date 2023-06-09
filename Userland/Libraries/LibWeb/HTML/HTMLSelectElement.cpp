@@ -143,6 +143,38 @@ void HTMLSelectElement::set_selected_index(int index)
     selected_option->m_dirty = true;
 }
 
+// https://html.spec.whatwg.org/multipage/form-elements.html#dom-select-value
+DeprecatedString HTMLSelectElement::value() const
+{
+    // The value IDL attribute, on getting, must return the value of the first option element in the list of options
+    // in tree order that has its selectedness set to true, if any. If there isn't one, then it must return the empty string.
+    auto selected_option_index = selected_index();
+    if (selected_option_index == -1) {
+        return DeprecatedString::empty();
+    }
+
+    auto selected_option = list_of_options()[selected_option_index];
+    return selected_option->value();
+}
+
+void HTMLSelectElement::set_value(DeprecatedString const& new_value)
+{
+    // On setting, the value attribute must set the selectedness of all the option elements in the list of options to false,
+    // and then the first option element in the list of options, in tree order, whose value is equal to the given new value,
+    // if any, must have its selectedness set to true and its dirtiness set to true.
+    auto options = list_of_options();
+    for (auto& option : options)
+        option->m_selected = false;
+
+    for (auto& option : options) {
+        if (option->value().matches(new_value, CaseSensitivity::CaseSensitive)) {
+            option->m_selected = true;
+            option->m_dirty = true;
+            return;
+        }
+    }
+}
+
 // https://html.spec.whatwg.org/multipage/interaction.html#dom-tabindex
 i32 HTMLSelectElement::default_tab_index_value() const
 {
